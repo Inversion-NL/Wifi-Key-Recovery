@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="default_text_color_light">#FFFFFFFF</color>
+    <color name="default_text_color_dark">#FF000000</color>
+ 
+    <color name="result_row">#FFE5E6E7</color>
+    <color name="result_row_alt">#FFDDDEDF</color> 
+
+    <color name="green">#FF96AE3A</color>
+    <color name="white">#FFFFFFFF</color>
+
+<!-- Material design colors -->
+    <!--   your app branding color for the app bar -->
+    <color name="primary">@color/material_teal_500</color>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <color name="primary_dark">@color/material_teal_700</color>
+    <!--   theme UI controls like checkboxes and text fields -->
+    <color name="accent">@color/material_teal_200</color>
+
+    <color name="material_teal_200">#80CBC4</color>
+    <color name="material_teal_300">#4DB6AC</color>
+    <color name="material_teal_400">#26A69A</color>
+    <color name="material_teal_500">#009688</color>
+    <color name="material_teal_700">#00796B</color>
+
+    <color name="material_grey_300">#E0E0E0</color>
+    <color name="material_grey_400">#BDBDBD</color>
+    <color name="material_grey_500">#9E9E9E</color>
+</resources>
