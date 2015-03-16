@@ -38,7 +38,6 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import aws.apps.wifiKeyRecovery.R;
 import nl.inversion.wifiKeyRecovery.adapters.NetInfoAdapter;
 import nl.inversion.wifiKeyRecovery.containers.NetInfo;
 import nl.inversion.wifiKeyRecovery.containers.SavedData;
@@ -91,7 +90,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	};
 
 	final Handler handler = new Handler() {
-		@SuppressWarnings("unchecked")
+
 		public void handleMessage(Message msg) {
 			switch(msg.what){
 

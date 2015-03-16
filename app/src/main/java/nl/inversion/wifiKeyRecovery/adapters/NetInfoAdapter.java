@@ -16,7 +16,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import aws.apps.wifiKeyRecovery.R;
 import nl.inversion.wifiKeyRecovery.containers.NetInfo;
 
 public class NetInfoAdapter extends BaseAdapter implements Filterable { // implements
