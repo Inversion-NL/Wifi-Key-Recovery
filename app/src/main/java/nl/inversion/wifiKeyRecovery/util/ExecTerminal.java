@@ -67,16 +67,16 @@ public class ExecTerminal {
 		ExecResult res = et.execSu("su && echo 1");
 
 		if (res.getStdOut().trim().equals("1")){
-			Log.i(TAG, "^ got root!");
+			Log.i(TAG, "Got root!");
 			return true;
 		}
 
-		Log.w(TAG, "^ could not get root.");
+		Log.w(TAG, "Could not get root");
 		return false;
 	}
 
 	public ExecResult exec(String cmd) {
-		Log.d(TAG, "^ exec(): '" + cmd + "'");
+		Log.d(TAG, "exec(): '" + cmd + "'");
 		String stdOut = "";
 		String stdErr = "";
 
@@ -119,10 +119,12 @@ public class ExecTerminal {
 			}
 
 		} catch (IOException e) {
-			Log.e(TAG, "^ exec() IOException: " + e.getMessage());
+			Log.e(TAG, "exec() IOException");
+            e.printStackTrace();
 
 		} catch (InterruptedException e) {
-			Log.e(TAG, "^ exec() InterruptedException: " + e.getMessage());
+			Log.e(TAG, "exec() InterruptedException");
+            e.printStackTrace();
 		}
 
 		ExecResult res = new ExecResult(cmd, stdOut, stdErr);
@@ -131,7 +133,7 @@ public class ExecTerminal {
 	}
 
 	public ExecResult execSu(String cmd) {
-		Log.d(TAG, "^ execSu(): '" + cmd + "'");
+		Log.d(TAG, "execSu(): '" + cmd + "'");
 		String stdOut = "";
 		String stdErr = "";
 
@@ -158,7 +160,8 @@ public class ExecTerminal {
 				}
 				readerOut.close();
 			} catch (IOException e) {
-				Log.e(TAG, "^ execSu() - IOException in sdtdOut Loop: " + e.getMessage());
+				Log.e(TAG, "execSu() - IOException in sdtdOut Loop");
+                e.printStackTrace();
 			}
 
 			try {
@@ -168,13 +171,16 @@ public class ExecTerminal {
 				}
 				readerErr.close();
 			} catch (IOException e) {
-				Log.e(TAG, "^ execSu() - IOException in sdtdOut Loop: " + e.getMessage());
+				Log.e(TAG, "execSu() - IOException in sdtdOut Loop");
+                e.printStackTrace();
 			}
 
 		} catch (IOException e) {
-			Log.e(TAG, "^ execSu() - IOException: " + e.getMessage());
+			Log.e(TAG, "execSu() - IOException");
+            e.printStackTrace();
 		} catch (InterruptedException e) {
-			Log.e(TAG, "^ execSu() - InterruptedException: " + e.getMessage());
+			Log.e(TAG, "execSu() - InterruptedException");
+            e.printStackTrace();
 		}
 
 		ExecResult res = new ExecResult(cmd, stdOut, stdErr);

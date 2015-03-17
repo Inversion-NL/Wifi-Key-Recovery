@@ -3,10 +3,9 @@ package nl.inversion.wifiKeyRecovery.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.text.Format;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -17,51 +16,20 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.widget.Toast;
+
+import nl.inversion.wifiKeyRecovery.R;
 import nl.inversion.wifiKeyRecovery.ui.MyAlertBox;
 
 public class UsefulBits {
 	final String TAG =  this.getClass().getName();
 	private Context mContext;
 
-	public UsefulBits(Context cntx) {
-		Log.d(TAG, "^ Object created");
-		mContext = cntx;
-	}
-
-	public static boolean validateIPv4Address(String address) {
-		try {
-			java.net.Inet4Address.getByName(address);
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
-	}
-
-	public static boolean validateIPv6Address(String address) {
-		try {
-			java.net.Inet6Address.getByName(address);
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
-	}
-
-
-	public Calendar convertMillisToDate(long millis){
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(millis);
-		return calendar;
-	}
-
-	public String formatDateTime(String formatString, Date d){
-		Format formatter = new SimpleDateFormat(formatString);
-		return formatter.format(d);
+	public UsefulBits(Context context) {
+		mContext = context;
 	}
 
     public static String getLocaleFormattedDate(Calendar calendar) {
@@ -86,11 +54,10 @@ public class UsefulBits {
 		intent.setClassName(packageName, className);
 
 		List<ResolveInfo> list =
-				packageManager.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
+				packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
 		if (list.size() > 0) {
-			Log.d(TAG, "^ Activity exists:" + className);
+			Log.d(TAG, "Activity exists:" + className);
 		}
 
 		return list.size() > 0;
@@ -99,64 +66,55 @@ public class UsefulBits {
 	public boolean isIntentAvailable(Context context, String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
-		List<ResolveInfo> resolveInfo =
-				packageManager.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfo.size() > 0) {
+
+        List<ResolveInfo> resolveInfo =
+				packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        if (resolveInfo.size() > 0) {
+            Log.d(TAG, "Activity exists:" + action);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isOnline() {
-		try{
-			ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-			if (cm != null) {
-				return cm.getActiveNetworkInfo().isConnected();
-			} else {
-				return false;
-			}
-
-		}catch(Exception e){
-			return false;
-		}
-	}
-
 	public void saveToFile(String fileName, File directory, String contents){
-		Log.d(TAG, "^ Saving file.");
+		Log.d(TAG, "Saving file.");
 
 		if (android.os.Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED)){
 			try {
 
 				if (directory.canWrite()){
-					File gpxfile = new File(directory, fileName);
-					FileWriter gpxwriter = new FileWriter(gpxfile);
-					BufferedWriter out = new BufferedWriter(gpxwriter);
+
+					File file = new File(directory, fileName);
+					FileWriter fileWriter = new FileWriter(file);
+					BufferedWriter out = new BufferedWriter(fileWriter);
+
 					out.write(contents);
 					out.close();
-					Log.d(TAG, "^ Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'");
-					showToast("Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'",
-							Toast.LENGTH_SHORT, Gravity.TOP,0,0);
+
+					Log.d(TAG, "Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'");
+                    Toast.makeText(mContext, "Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'", Toast.LENGTH_LONG).show();
 				}
 
-			} catch (Exception e) {
-				showToast("Could not write file:\n+ e.getMessage()",
-						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-				Log.e(TAG, "^ Could not write file " + e.getMessage());
-			}
+			} catch (IOException e) {
 
-		}else{
-			showToast("No SD card is mounted...", Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-			Log.e(TAG, "^ No SD card is mounted.");
+                Toast.makeText(mContext, "Could not write file", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Could not write file " + e.getMessage());
+                e.printStackTrace();
+
+            }
+
+        } else {
+            Toast.makeText(mContext, "No SD card is mounted...", Toast.LENGTH_LONG).show();
+			Log.e(TAG, "No SD card is mounted.");
 		}
 	}
 
 	public void showAboutDialogue(){
 		String title = mContext.getString(R.string.app_name) + " v"+ getAppVersion();
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append(mContext.getString(R.string.app_changelog));
 		sb.append("\n\n");
@@ -169,18 +127,20 @@ public class UsefulBits {
 		MyAlertBox.create(mContext, sb.toString(), title, mContext.getString(android.R.string.ok)).show();
 	}
 
-	public void ShowAlert(String title, String text, String button){
-		if (button.equals("")){button = mContext.getString(android.R.string.ok);}
+	public void ShowAlert(String title, String text, String button) {
 
-		try{
+		if (button.equals("")) button = mContext.getString(android.R.string.ok);
+
+		try {
 			AlertDialog.Builder ad = new AlertDialog.Builder(mContext);
 			ad.setTitle( title );
 			ad.setMessage(text);
 
 			ad.setPositiveButton( button, null );
 			ad.show();
-		}catch (Exception e){
-			Log.e(TAG, "^ ShowAlert()", e);
+		} catch (Exception e){
+			Log.e(TAG, "ShowAlert()");
+            e.printStackTrace();
 		}
 	}
 
@@ -189,61 +149,53 @@ public class UsefulBits {
 
 		try{
 			// Create the dialog box
-			AlertDialog.Builder alertbox = new AlertDialog.Builder(mContext);
+			AlertDialog.Builder alertBox = new AlertDialog.Builder(mContext);
 
-			alertbox.setTitle(title);
-			alertbox.setMessage(message);
+			alertBox.setTitle(title);
+			alertBox.setMessage(message);
 
-			alertbox.setPositiveButton(button1Text, null);
-			alertbox.setNegativeButton("Market", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface arg0, int arg1) {
-					try {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse(marketUri));
-						mContext.startActivity(intent);
-					} catch (Exception e){
-						Log.e(TAG, "^ Error opening Market Page : " + e.getMessage());
-						ShowAlert(mContext.getString(R.string.text_error), mContext.getString(R.string.text_could_not_go_to_market), mContext.getString(android.R.string.ok));
-					}
-				}
-			});
+			alertBox.setPositiveButton(button1Text, null);
+			alertBox.setNegativeButton("Market", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(marketUri));
+                        mContext.startActivity(intent);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error opening Market Page : " + e.getMessage());
+                        ShowAlert(mContext.getString(R.string.text_error), mContext.getString(R.string.text_could_not_go_to_market), mContext.getString(android.R.string.ok));
+                    }
+                }
+            });
 
-			alertbox.show();
+			alertBox.show();
 
-		}catch (Exception e){
-			Log.e(TAG, "^ ShowAlertWithWirelessSettings()", e);
-
+		} catch (Exception e){
+            e.printStackTrace();
+			Log.e(TAG, "ShowAlertWithWirelessSettings()");
 		}
-	}
-
-	public void showToast(String message, int duration, int location, int x_offset, int y_offset){
-		Toast toast = Toast.makeText(mContext.getApplicationContext(), message, duration);
-		toast.setGravity(location,x_offset,y_offset);
-		toast.show();
 	}
 
 	public String listToString(List<?> list) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int cnt = 0;
 
-		for(Object obj:list){
-			cnt +=1;
-			sb.append("#" + cnt +":\n");
-			sb.append(obj + "\n");
-		}
-
-		return sb.toString();
+        if (list != null) {
+            for (Object obj : list) {
+                cnt += 1;
+                sb.append("#" + cnt + ":\n");
+                sb.append(obj + "\n");
+            }
+            return sb.toString();
+        } else {
+            Log.e(TAG, "Could not convert list to string: List was null");
+            return " ";
+        }
 	}
 
 	public int dipToPixels(int dip) {
 		int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				(float) dip, mContext.getResources().getDisplayMetrics());
-		return value;
-	}
-
-	public float dipToPixels(float dip) {
-		float value = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-				dip, mContext.getResources().getDisplayMetrics());
 		return value;
 	}
 }

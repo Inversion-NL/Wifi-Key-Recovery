@@ -26,7 +26,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import aws.apps.wifiKeyRecovery.R;
+
+import nl.inversion.wifiKeyRecovery.R;
 import nl.inversion.wifiKeyRecovery.containers.NetInfo;
 import nl.inversion.wifiKeyRecovery.util.ExecTerminal.ExecResult;
 

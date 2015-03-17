@@ -16,14 +16,10 @@ public class ExportActivity extends Activity {
 	final String TAG =  this.getClass().getName();
 
 	private EditText mFldInfo;
-	private Button mBtnShare;
-	private Button mBtnToSd;
-	private Button mBtnClose;
-	private String mTimeDate;
+    private String mTimeDate;
 	private UsefulBits mUsefulBits;
 
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "^ Intent started");
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.export);
@@ -32,9 +28,9 @@ public class ExportActivity extends Activity {
 		mUsefulBits = new UsefulBits(getApplicationContext());
 
 		mFldInfo = (EditText) findViewById(R.id.fld_export_text);
-		mBtnShare = (Button) findViewById(R.id.buttonshare);
-		mBtnToSd = (Button) findViewById(R.id.buttontosd);
-		mBtnClose = (Button) findViewById(R.id.buttoncloseexport);
+        Button mBtnShare = (Button) findViewById(R.id.buttonshare);
+        Button mBtnToSd = (Button) findViewById(R.id.buttontosd);
+        Button mBtnClose = (Button) findViewById(R.id.buttoncloseexport);
 
 		if(extras !=null)
 		{
@@ -44,24 +40,25 @@ public class ExportActivity extends Activity {
 		}
 
 		mBtnShare.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				shareResults();
-			}
-		});
+            public void onClick(View v) {
+                shareResults();
+            }
+        });
 
 		mBtnToSd.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+            public void onClick(View v) {
 
-				try {
-					final File folder = Environment.getExternalStorageDirectory();
-					final String filename = "wifikeyrecovery_" + mTimeDate + ".txt";
-					final String contents = mFldInfo.getText().toString();
-					mUsefulBits.saveToFile(filename, folder, contents);
-				} catch (Exception e) {
-					Log.e(TAG, "^ " + e.getMessage());
-				}
-			}
-		});
+                try {
+                    final File folder = Environment.getExternalStorageDirectory();
+                    final String filename = "wifikeyrecovery_" + mTimeDate + ".txt";
+                    final String contents = mFldInfo.getText().toString();
+                    mUsefulBits.saveToFile(filename, folder, contents);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed get external storage directory ");
+                    e.printStackTrace();
+                }
+            }
+        });
 
 		mBtnClose.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -71,16 +68,16 @@ public class ExportActivity extends Activity {
 	}
 
 	private void shareResults(){
-		final Intent t = new Intent(Intent.ACTION_SEND);
+		final Intent sendIntent = new Intent(Intent.ACTION_SEND);
 		final String text = mFldInfo.getText().toString();
 		final String subject =  getString(R.string.text_wifi_password_recovery)  + " @ " + mTimeDate;
 
-		t.setType("text/plain");
-		t.putExtra(Intent.EXTRA_TEXT, text);
-		t.putExtra(Intent.EXTRA_SUBJECT, subject);
-		t.addCategory(Intent.CATEGORY_DEFAULT);
+		sendIntent.setType("text/plain");
+		sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+		sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		sendIntent.addCategory(Intent.CATEGORY_DEFAULT);
 		final Intent share = Intent.createChooser(
-				t,
+				sendIntent,
 				getString(R.string.label_share_dialogue_title));
 		startActivity(share);
 	}

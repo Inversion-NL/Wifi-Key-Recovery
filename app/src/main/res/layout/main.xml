@@ -76,7 +76,7 @@
             android:layout_marginBottom="5dp" />
     </RelativeLayout>
 
-        <RelativeLayout
+    <RelativeLayout
         android:id="@+id/filter_segment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@id/btn_search"
-            android:hint="SSID Quicksearch" />
+            android:hint="@string/text_hint_ssid_search" />
 
         <View
             android:layout_width="fill_parent"
@@ -116,6 +116,10 @@
         android:layout_above="@id/bottom_bar"
         android:layout_below="@id/filter_segment"
         android:cacheColorHint="#00000000"
-        android:layout_gravity="left" />
+        android:layout_gravity="center"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"/>
 
 </RelativeLayout>

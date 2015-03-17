@@ -8,6 +8,8 @@ import android.text.util.Linkify;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import nl.inversion.wifiKeyRecovery.R;
+
 public class MyAlertBox {
 
 	 public static AlertDialog create(Context context, String text, String title, String button) {
