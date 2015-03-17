@@ -31,11 +31,15 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -59,7 +63,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private MenuItem mSearchActionMenuItem;
     private EditText mSearchEt;
     private String mSearchQuery;
-    private Boolean mSearchOpened   = false;
+    private Boolean mSearchOpened = false;
     private Menu menu;
 
     private static final int ID_COPY_PASSWORD	= 0;
@@ -70,6 +74,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     private static final String INTENT_EXPORT_NAME_INFO = "info";
     private static final String INTENT_EXPORT_NAME_TIME = "time";
+    private static final long animationDuration = 400l;
 
 	final String TAG =  this.getClass().getName();
     int sdkInt;
@@ -238,6 +243,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
             // Search edit text field setup.
             mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
+            expandHorizontalAnimation(mSearchEt, animationDuration);
+
             mSearchEt.addTextChangedListener(filterTextWatcher);
             mSearchEt.setText(queryText);
             mSearchEt.requestFocus();
@@ -268,8 +275,13 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private void closeSearchBar() {
 
         if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
+
+            ActionBar actionBar = getActionBar();
             // Remove custom view.
-            getActionBar().setDisplayShowCustomEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(false);
+
+            mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
+            collapseHorizontalAnimation(mSearchEt, animationDuration);
 
             // Change search icon accordingly.
             mSearchActionMenuItem.setIcon(mIconOpenSearch);
@@ -464,6 +476,72 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(mSearchEt.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
 
+    }
+
+    public static void expandVertical(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        anim.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(anim);
+    }
+
+    public static void expandHorizontalAnimation(final View v, long duration) {
+
+        ScaleAnimation anim = new ScaleAnimation(1, 0, 1, 1);
+        anim.setDuration(duration);
+        v.startAnimation(anim);
+    }
+
+    public static void collapseHorizontalAnimation(final View v, long duration) {
+
+        ScaleAnimation anim = new ScaleAnimation(0, 1, 1, 1);
+        anim.setDuration(duration);
+        v.startAnimation(anim);
+    }
+
+    public static void expandHorizontal(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int measuredWidth = v.getMeasuredWidth();
+
+        // v.getLayoutParams().width = 0;
+        // v.setVisibility(View.VISIBLE);
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().width = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(measuredWidth * interpolatedTime);
+                v.requestLayout();
+            }
+
+        };
+
+        // 1dp/ms
+        long animation = (int) (measuredWidth / v.getContext().getResources().getDisplayMetrics().density);
+        animation = 400l;
+        anim.setDuration(animation);
+        v.startAnimation(anim);
     }
 
     String text;
