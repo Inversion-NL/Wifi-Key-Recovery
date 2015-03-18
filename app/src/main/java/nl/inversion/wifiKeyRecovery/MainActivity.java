@@ -198,7 +198,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         switch (item.getItemId()) {
             case R.id.menu_about:
-                mUsefulBits.showAboutDialogue();
+                mUsefulBits.showAboutDialogue(sdkInt);
                 return true;
 
             case R.id.menu_export:
@@ -366,13 +366,27 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 	private void getPasswords(){
 		LockScreenRotation();
-		ExecTerminal et = new ExecTerminal();
+		ExecTerminal mExecTerminal = new ExecTerminal();
 
-		if(et.checkSu()){
+		if(mExecTerminal.checkSu()){
+
 			showDialog(DIALOG_GET_PASSWORDS);
+
 		} else {
 
-			AlertDialog dlg = MyAlertBox.create(this, getString(R.string.root_needed), getString(R.string.app_name), getString(android.R.string.ok));
+            int textColor;
+            if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
+                textColor = R.color.default_text_color_dark;
+            } else {
+                textColor = R.color.default_text_color_light;
+            }
+
+            AlertDialog dlg = MyAlertBox.create(this,
+                    getString(R.string.root_needed),
+                    getString(R.string.app_name),
+                    getString(android.R.string.ok),
+                    textColor);
+
 			dlg.setOnDismissListener(new OnDismissListener() {
 
 				@Override
@@ -398,8 +412,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
             }
             String message = "'" + msgText + "' " + getString(R.string.text_copied);
 
-            int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            if (sdkInt < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                // Pre-Honeycomb clipboard manager
                 android.text.ClipboardManager clipboard =
                         (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 clipboard.setText(text);

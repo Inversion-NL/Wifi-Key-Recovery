@@ -12,17 +12,23 @@ import nl.inversion.wifiKeyRecovery.R;
 
 public class MyAlertBox {
 
-	 public static AlertDialog create(Context context, String text, String title, String button) {
+	 public static AlertDialog create(
+                                         Context context,
+                                         String message,
+                                         String title,
+                                         String buttonText,
+                                         int textColor) {
+
 	  return new AlertDialog.Builder(context)
 	   .setTitle(title)
 	   .setCancelable(true)
-	   .setIcon(android.R.drawable.ic_dialog_info)
-	   .setPositiveButton(button, null)
-	   .setView(LinkifyText(context, text))
+	   .setIcon(R.drawable.ic_stat_info)
+	   .setPositiveButton(buttonText, null)
+	   .setView(LinkifyText(context, message, textColor))
 	   .create();
 	 }
 
-		public static ScrollView LinkifyText(Context context, String message)
+		public static ScrollView LinkifyText(Context context, String message, int textColor)
 		{
 			final ScrollView svMessage = new ScrollView(context);
 			final TextView tvMessage = new TextView(context);
@@ -31,7 +37,7 @@ public class MyAlertBox {
 
 		    Linkify.addLinks(spanText, Linkify.ALL);
 		    tvMessage.setText(spanText);
-		    tvMessage.setTextColor(context.getResources().getColor(R.color.default_text_color_light));
+		    tvMessage.setTextColor(context.getResources().getColor(textColor));
 		    tvMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
 		    svMessage.setPadding(14, 2, 10, 12);

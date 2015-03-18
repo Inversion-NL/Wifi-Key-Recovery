@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -93,38 +94,52 @@ public class UsefulBits {
 					out.write(contents);
 					out.close();
 
-					Log.d(TAG, "Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'");
-                    Toast.makeText(mContext, "Saved to SD as '" + directory.getAbsolutePath() + "/" + fileName + "'", Toast.LENGTH_LONG).show();
+					Log.d(TAG, "Saved to SD as '"
+                            + directory.getAbsolutePath()
+                            + "/"
+                            + fileName + "'");
+                    Toast.makeText(mContext, mContext.getString(R.string.text_saved_to_SD)
+                            + " '" + directory.getAbsolutePath()
+                            + "/" + fileName
+                            + "'", Toast.LENGTH_LONG).show();
 				}
 
 			} catch (IOException e) {
 
-                Toast.makeText(mContext, "Could not write file", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getString(R.string.text_could_not_write_file),
+                        Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Could not write file " + e.getMessage());
                 e.printStackTrace();
 
             }
 
         } else {
-            Toast.makeText(mContext, "No SD card is mounted...", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, mContext.getString(R.string.text_no_SD_card_mounted),
+                    Toast.LENGTH_LONG).show();
 			Log.e(TAG, "No SD card is mounted.");
 		}
 	}
 
-	public void showAboutDialogue(){
+	public void showAboutDialogue(int sdkInt){
 		String title = mContext.getString(R.string.app_name) + " v"+ getAppVersion();
+
+        int textColor;
+        if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
+            textColor = R.color.default_text_color_dark;
+        } else {
+            textColor = R.color.default_text_color_light;
+        }
 
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(mContext.getString(R.string.app_changelog));
-		sb.append("\n\n");
-		sb.append(mContext.getString(R.string.app_notes));
-		sb.append("\n\n");
-		sb.append(mContext.getString(R.string.app_acknowledgements));
-		sb.append("\n\n");
-		sb.append(mContext.getString(R.string.app_copyright));
 
-		MyAlertBox.create(mContext, sb.toString(), title, mContext.getString(android.R.string.ok)).show();
+		MyAlertBox.create(mContext,
+                sb.toString(),
+                title,
+                mContext.getString(android.R.string.ok),
+                textColor)
+                .show();
 	}
 
 	public void ShowAlert(String title, String text, String button) {
@@ -133,7 +148,7 @@ public class UsefulBits {
 
 		try {
 			AlertDialog.Builder ad = new AlertDialog.Builder(mContext);
-			ad.setTitle( title );
+			ad.setTitle(title);
 			ad.setMessage(text);
 
 			ad.setPositiveButton( button, null );
@@ -144,7 +159,11 @@ public class UsefulBits {
 		}
 	}
 
-	public void showApplicationMissingAlert(String title, String message, String button1Text, final String marketUri){
+	public void showApplicationMissingAlert(
+            String title,
+            String message,
+            String button1Text,
+            final String marketUri){
 		if (button1Text.equals("")){button1Text = mContext.getString(android.R.string.ok);}
 
 		try{
@@ -155,15 +174,19 @@ public class UsefulBits {
 			alertBox.setMessage(message);
 
 			alertBox.setPositiveButton(button1Text, null);
-			alertBox.setNegativeButton("Market", new DialogInterface.OnClickListener() {
+			alertBox.setNegativeButton(mContext.getString(R.string.text_playStore), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(marketUri));
                         mContext.startActivity(intent);
                     } catch (Exception e) {
-                        Log.e(TAG, "Error opening Market Page : " + e.getMessage());
-                        ShowAlert(mContext.getString(R.string.text_error), mContext.getString(R.string.text_could_not_go_to_market), mContext.getString(android.R.string.ok));
+                        Log.e(TAG, "Error opening play store: ");
+                        e.printStackTrace();
+                        ShowAlert(
+                                mContext.getString(R.string.text_error),
+                                mContext.getString(R.string.text_could_not_go_to_play_store),
+                                mContext.getString(android.R.string.ok));
                     }
                 }
             });
@@ -172,7 +195,7 @@ public class UsefulBits {
 
 		} catch (Exception e){
             e.printStackTrace();
-			Log.e(TAG, "ShowAlertWithWirelessSettings()");
+			Log.e(TAG, "showApplicationMissingAlert()");
 		}
 	}
 
