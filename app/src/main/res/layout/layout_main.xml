@@ -9,7 +9,7 @@
         android:id="@+id/top_bar"
         style="@style/DefaultTableLayoutStyle"
         android:layout_alignParentTop="true"
-        android:background="@color/green">
+        android:background="@color/material_grey_300">
 
         <TableRow style="@style/TopDataRow"
             android:layout_marginTop="10dp"
@@ -53,7 +53,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="@color/green" >
+        android:background="@color/material_grey_300" >
 
         <TextView
             android:id="@+id/tvResultsTitle"
@@ -73,7 +73,8 @@
             android:layout_toRightOf="@id/tvResultsTitle"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginBottom="5dp"
+            android:text="0" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -106,7 +107,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@color/green" />
+            android:background="@color/gingerbread_green" />
     </RelativeLayout>
     
     <ListView

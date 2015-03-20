@@ -9,6 +9,7 @@
     <string name="label_menu_refresh">Refresh</string>
     <string name="label_menu_about">About</string>
     <string name="label_menu_export">Export</string>
+    <string name="label_menu_edit">Edit</string>
     <string name="label_menu_search">Search</string>
     <string name="label_device">Device:</string>
     <string name="label_time">Time:</string>

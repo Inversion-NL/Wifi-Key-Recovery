@@ -1,5 +1,6 @@
 package nl.inversion.wifiKeyRecovery;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -80,7 +81,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     int sdkInt;
 
     // Setting the background color at runtime for lollipop devices
-    private int MATERIAL_TEXT_BACKGROUND_COLOR = R.color.material_grey_300;
+    private int GINGERBREAD_BACKGROUND_COLOR = R.color.gingerbread_green;
 
 	private Bundle mThreadBundle;
 	private EditText mEditFilter;
@@ -98,7 +99,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.layout_main);
 
         mUsefulBits = new UsefulBits(this);
 
@@ -117,25 +118,25 @@ public class MainActivity extends Activity implements OnItemClickListener {
         sdkInt = android.os.Build.VERSION.SDK_INT;
         if (sdkInt >= Build.VERSION_CODES.LOLLIPOP) {
 
+            // getDrawable is only available on Lollipop and newer
             mIconOpenSearch = getDrawable(R.drawable.ic_action_search);
             mIconCloseSearch = getDrawable(R.drawable.ic_delete);
 
-            // Change background color for lollipop devices
-            TableLayout mTop_bar = (TableLayout) findViewById(R.id.top_bar);
-            RelativeLayout mBottom_bar = (RelativeLayout) findViewById(R.id.bottom_bar);
-
-            mTop_bar.setBackgroundColor(getResources().getColor(MATERIAL_TEXT_BACKGROUND_COLOR));
-            mBottom_bar.setBackgroundColor(getResources().getColor(MATERIAL_TEXT_BACKGROUND_COLOR));
-
         } else if (sdkInt > Build.VERSION_CODES.HONEYCOMB) {
 
-            // Use getDrawable which is deprecated since Lollipop
-            // Only used for devices with Honeycomb or newer
+            // Use getResources().getDrawable which is deprecated since Lollipop
+            // Only used for devices older than Lollipop
             mIconOpenSearch = getResources().getDrawable(R.drawable.ic_action_search);
             mIconCloseSearch = getResources().getDrawable(R.drawable.ic_delete);
 
         } else if (sdkInt < Build.VERSION_CODES.HONEYCOMB) {
 
+            // Change background color to green for Gingerbread and older devices
+            TableLayout mTop_bar = (TableLayout) findViewById(R.id.top_bar);
+            RelativeLayout mBottom_bar = (RelativeLayout) findViewById(R.id.bottom_bar);
+
+            mTop_bar.setBackgroundColor(getResources().getColor(GINGERBREAD_BACKGROUND_COLOR));
+            mBottom_bar.setBackgroundColor(getResources().getColor(GINGERBREAD_BACKGROUND_COLOR));
 
         }
 
@@ -202,14 +203,28 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 return true;
 
             case R.id.menu_export:
+                StringBuilder export_text = new StringBuilder();
+
+                export_text.append(getString(R.string.label_wifi_passwords) + "\n")
+                        .append(mUsefulBits.listToString((List<?>) mList.getTag()) + "\n\n")
+                        .append(mTextViewResultCount.getText());
+
+                final File folder = android.os.Environment.getExternalStorageDirectory();
+                final String filename = "wifikeyrecovery_" + mTimeDate + ".txt";
+                final String contents = export_text.toString();
+                mUsefulBits.saveToFile(filename, folder, contents);
+
+                return true;
+
+            case R.id.menu_edit:
                 Intent myIntent = new Intent();
-                String export_text = "";
+                export_text = new StringBuilder();
 
-                export_text += getString(R.string.label_wifi_passwords) + "\n";
-                export_text += mUsefulBits.listToString((List<?>) mList.getTag()) + "\n\n";
-                export_text += mTextViewResultCount.getText();
+                export_text.append(getString(R.string.label_wifi_passwords) + "\n")
+                        .append(mUsefulBits.listToString((List<?>) mList.getTag()) + "\n\n")
+                        .append(mTextViewResultCount.getText());
 
-                myIntent.putExtra(INTENT_EXPORT_NAME_INFO, export_text);
+                myIntent.putExtra(INTENT_EXPORT_NAME_INFO, export_text.toString());
                 myIntent.putExtra(INTENT_EXPORT_NAME_TIME, mTimeDate);
                 myIntent.setClass(this, EditActivity.class);
                 startActivity(myIntent);
@@ -266,7 +281,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
             showSoftKeyboard();
 
         } else {
-            // Should be called since the search button is hidden for devices
+            // Should not be called since the search button is hidden for devices
             // older then Honeycomb
         }
     }

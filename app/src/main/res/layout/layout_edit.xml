@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/export_headerbit"
+        android:id="@+id/edit_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -22,10 +22,10 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/export_mainbit"
+        android:id="@+id/edit_main"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/export_headerbit"
+        android:layout_below="@+id/edit_header"
         android:fillViewport="true"
         android:layout_marginBottom="5dp">
 

@@ -102,9 +102,9 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable { // imple
 			final TextView text = (TextView) convertView.findViewById(R.id.text);
 
 			if (position % 2 == 0) {
-				convertView.setBackgroundResource(R.drawable.rowbg_alt);
+				convertView.setBackgroundResource(R.drawable.row_background_light);
 			} else {
-				convertView.setBackgroundResource(R.drawable.rowbg);
+				convertView.setBackgroundResource(R.drawable.row_background_dark);
 			}
 
 			text.setText(event.toString());

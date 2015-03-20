@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
 public class EditActivity extends Activity {
@@ -26,7 +28,7 @@ public class EditActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit);
+		setContentView(R.layout.layout_edit);
 
 		final Bundle extras = getIntent().getExtras();
 		mUsefulBits = new UsefulBits(getApplicationContext());
@@ -71,6 +73,7 @@ public class EditActivity extends Activity {
             final String contents = mFldInfo.getText().toString();
             mUsefulBits.saveToFile(filename, folder, contents);
         } catch (Exception e) {
+            Toast.makeText(this, R.string.text_could_not_write_file, Toast.LENGTH_LONG).show();
             Log.e(TAG, "Failed get external storage directory ");
             e.printStackTrace();
         }

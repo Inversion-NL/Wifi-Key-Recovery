@@ -18,9 +18,14 @@
         android:orderInCategory="300"
         android:title="@string/label_menu_export"/>
     <item
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_menu_edit"
+        android:orderInCategory="400"
+        android:title="@string/label_menu_edit"/>
+    <item
         android:id="@+id/menu_about"
         android:icon="@drawable/ic_menu_info"
-        android:orderInCategory="400"
+        android:orderInCategory="500"
         android:title="@string/label_menu_about"/>
 
 </menu>

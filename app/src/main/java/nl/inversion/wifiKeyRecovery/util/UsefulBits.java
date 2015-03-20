@@ -78,11 +78,11 @@ public class UsefulBits {
 		return false;
 	}
 
-	public void saveToFile(String fileName, File directory, String contents){
+	public void saveToFile(String fileName, File directory, String contents) {
 		Log.d(TAG, "Saving file.");
 
-		if (android.os.Environment.getExternalStorageState().equals(
-				android.os.Environment.MEDIA_MOUNTED)){
+		if (android.os.Environment.getExternalStorageState()
+                .equals(android.os.Environment.MEDIA_MOUNTED)){
 			try {
 
 				if (directory.canWrite()){
@@ -102,15 +102,14 @@ public class UsefulBits {
                             + " '" + directory.getAbsolutePath()
                             + "/" + fileName
                             + "'", Toast.LENGTH_LONG).show();
-				}
+				} else {
+                    Log.e(TAG, "Unable to write directory");
+                }
 
 			} catch (IOException e) {
-
-                Toast.makeText(mContext, mContext.getString(R.string.text_could_not_write_file),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getString(R.string.text_could_not_write_file),Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Could not write file " + e.getMessage());
                 e.printStackTrace();
-
             }
 
         } else {
