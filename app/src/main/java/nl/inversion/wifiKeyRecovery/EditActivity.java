@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
-public class ExportActivity extends Activity {
+public class EditActivity extends Activity {
 	final String TAG =  this.getClass().getName();
 
     private static final String INTENT_EXPORT_NAME_INFO = "info";
@@ -26,7 +26,7 @@ public class ExportActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.export);
+		setContentView(R.layout.edit);
 
 		final Bundle extras = getIntent().getExtras();
 		mUsefulBits = new UsefulBits(getApplicationContext());
@@ -44,7 +44,7 @@ public class ExportActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_export, menu);
+        inflater.inflate(R.menu.menu_edit, menu);
         return true;
     }
 

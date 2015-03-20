@@ -211,7 +211,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
                 myIntent.putExtra(INTENT_EXPORT_NAME_INFO, export_text);
                 myIntent.putExtra(INTENT_EXPORT_NAME_TIME, mTimeDate);
-                myIntent.setClass(this, ExportActivity.class);
+                myIntent.setClass(this, EditActivity.class);
                 startActivity(myIntent);
                 return true;
 
