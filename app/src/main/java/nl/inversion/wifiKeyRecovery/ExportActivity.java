@@ -44,7 +44,7 @@ public class ExportActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.export, menu);
+        inflater.inflate(R.menu.menu_export, menu);
         return true;
     }
 

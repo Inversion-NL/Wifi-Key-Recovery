@@ -173,7 +173,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     /** Creates the menu items */
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
         // Used for changing menu items programmatically
         this.menu = menu;
