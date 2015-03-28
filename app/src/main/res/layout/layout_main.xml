@@ -47,37 +47,6 @@
     </TableLayout>
 
     <RelativeLayout
-        android:id="@+id/bottom_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/material_grey_300" >
-
-        <TextView
-            android:id="@+id/tvResultsTitle"
-            style="@style/TitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/protected_networks"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp" />
-
-        <TextView
-            android:id="@+id/tvResults"
-            style="@style/DataTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tvResultsTitle"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="0" />
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/filter_segment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -109,18 +78,56 @@
             android:layout_marginRight="5dp"
             android:background="@color/gingerbread_green" />
     </RelativeLayout>
-    
-    <ListView
-        android:id="@+id/list"
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/material_grey_300" >
+
+        <TextView
+            android:id="@+id/tvResultsTitle"
+            style="@style/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/protected_networks"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
+
+        <TextView
+            android:id="@+id/tvResults"
+            style="@style/DataTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tvResultsTitle"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="0" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/list_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/bottom_bar"
         android:layout_below="@id/filter_segment"
-        android:cacheColorHint="#00000000"
-        android:layout_gravity="center"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:background="@color/holo_bg_color_cards">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+    </RelativeLayout>
 
 </RelativeLayout>

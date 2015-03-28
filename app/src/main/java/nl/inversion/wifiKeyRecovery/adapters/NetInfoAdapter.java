@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,10 @@ import android.widget.TextView;
 import nl.inversion.wifiKeyRecovery.R;
 import nl.inversion.wifiKeyRecovery.containers.NetInfo;
 
-public class NetInfoAdapter extends BaseAdapter implements Filterable { // implements
-																		// SectionIndexer{
+public class NetInfoAdapter extends BaseAdapter implements Filterable {
+
+    private int sdkInt;
+
 	private final Map<String, Integer> mAlphaIndexer;
 
 	private List<NetInfo> mAllItems;
@@ -32,10 +35,10 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable { // imple
 
 	private Filter mFilter;
 
-	final String TAG = this.getClass().getName();
-
 	public NetInfoAdapter(Context context, List<NetInfo> appsList) {
 		super();
+
+        sdkInt = android.os.Build.VERSION.SDK_INT;
 
 		mSubItems = appsList;
 		mAllItems = this.mSubItems;
@@ -94,18 +97,28 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable { // imple
 		final NetInfo event = mSubItems.get(position);
 
 		if (convertView == null) {
-			final LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = vi.inflate(R.layout.list_item, null);
+			final LayoutInflater vi =
+                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (sdkInt > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                // Material design list item for devices with ICS and newer
+                convertView = vi.inflate(R.layout.list_item_material, null);
+            } else {
+                convertView = vi.inflate(R.layout.list_item, null);
+            }
 		}
 
 		if (event != null) {
 			final TextView text = (TextView) convertView.findViewById(R.id.text);
 
-			if (position % 2 == 0) {
-				convertView.setBackgroundResource(R.drawable.row_background_light);
-			} else {
-				convertView.setBackgroundResource(R.drawable.row_background_dark);
-			}
+            if (sdkInt < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                // Only background on devices older then ICS
+                if (position % 2 == 0) {
+                    convertView.setBackgroundResource(R.drawable.row_background_light);
+                } else {
+                    convertView.setBackgroundResource(R.drawable.row_background_dark);
+                }
+            }
 
 			text.setText(event.toString());
 			convertView.setTag(event);
@@ -179,5 +192,4 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable { // imple
 			return results;
 		}
 	}
-
 }

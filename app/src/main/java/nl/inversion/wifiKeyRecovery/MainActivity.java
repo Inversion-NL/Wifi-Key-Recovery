@@ -20,6 +20,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,12 +109,12 @@ public class MainActivity extends Activity implements OnItemClickListener {
         mLabelTimeDate = (TextView) findViewById(R.id.tvTime_value);
         mLabelDevice = (TextView) findViewById(R.id.tvDevice_value);
         mTextViewResultCount = (TextView) findViewById(R.id.tvResults);
-        mEditFilter = (EditText) findViewById(R.id.edit_search);
 
         mList.setFastScrollEnabled(true);
-        mList.setDivider( null );
+        mList.setDivider(null);
         mList.setDividerHeight(mUsefulBits.dipToPixels(1));
         mList.setOnItemClickListener(this);
+        mList.setBackgroundColor(getResources().getColor(R.color.holo_bg_color_cards));
 
         sdkInt = android.os.Build.VERSION.SDK_INT;
         if (sdkInt >= Build.VERSION_CODES.LOLLIPOP) {
@@ -121,6 +122,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
             // getDrawable is only available on Lollipop and newer
             mIconOpenSearch = getDrawable(R.drawable.ic_action_search);
             mIconCloseSearch = getDrawable(R.drawable.ic_delete);
+
+        } else if (sdkInt > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+
 
         } else if (sdkInt > Build.VERSION_CODES.HONEYCOMB) {
 
@@ -131,12 +135,20 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         } else if (sdkInt < Build.VERSION_CODES.HONEYCOMB) {
 
+            // Search filter only available on older devices
+            mEditFilter = (EditText) findViewById(R.id.edit_search);
+
             // Change background color to green for Gingerbread and older devices
             TableLayout mTop_bar = (TableLayout) findViewById(R.id.top_bar);
             RelativeLayout mBottom_bar = (RelativeLayout) findViewById(R.id.bottom_bar);
 
             mTop_bar.setBackgroundColor(getResources().getColor(GINGERBREAD_BACKGROUND_COLOR));
             mBottom_bar.setBackgroundColor(getResources().getColor(GINGERBREAD_BACKGROUND_COLOR));
+
+            // Holo cards is used since Honeycomb
+            // Changing background color of the list view container to white
+            findViewById(R.id.list_container)
+                    .setBackgroundColor(Color.WHITE);
 
         }
 
@@ -146,21 +158,25 @@ public class MainActivity extends Activity implements OnItemClickListener {
     @Override
     protected void onPause() {
         super.onPause();
-        mEditFilter.removeTextChangedListener(filterTextWatcher);
+        if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
+            mEditFilter.removeTextChangedListener(filterTextWatcher);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(mEditFilter != null){
-            mEditFilter.addTextChangedListener(filterTextWatcher);
+        if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
+                mEditFilter.addTextChangedListener(filterTextWatcher);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mEditFilter.removeTextChangedListener(filterTextWatcher);
+        if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
+            mEditFilter.removeTextChangedListener(filterTextWatcher);
+        }
     }
 
     @Override
@@ -347,14 +363,18 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         if(netInfoList.size() > 0 ){
 
-            // Only set visible for devices older than Honeycomb
-            if (sdkInt < Build.VERSION_CODES.HONEYCOMB)
+            // Only set filter text field visible and text change listener
+            // for devices older than Honeycomb
+            if (sdkInt < Build.VERSION_CODES.HONEYCOMB) {
                 findViewById(R.id.filter_segment).setVisibility(View.VISIBLE);
+                mEditFilter.addTextChangedListener(filterTextWatcher);
+            }
+
+            mTextViewResultCount.setText(String.valueOf(netInfoList.size()));
 
             mNiAdapter = new NetInfoAdapter(this, netInfoList);
-            mTextViewResultCount.setText(String.valueOf(netInfoList.size()));
             mList.setAdapter(mNiAdapter);
-            mEditFilter.addTextChangedListener(filterTextWatcher);
+
 
         } else {
 
@@ -368,7 +388,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         }
     }
 
-    /** Convenience function combining clearInfo and getInfo */
+    /** Convenient function combining clearInfo and getInfo */
     public void refreshInfo() {
         clearInfo();
         populateInfo();
@@ -458,7 +478,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	}
 
 	public void onClearSearchClick(){
-		mEditFilter.setText("");
+        if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
+            mEditFilter.setText("");
+        }
 	}
 
     private void showDebugWarningDialog() {
@@ -536,14 +558,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     public static void expandHorizontalAnimation(final View v, long duration) {
 
-        ScaleAnimation anim = new ScaleAnimation(1, 0, 1, 1);
+        ScaleAnimation anim = new ScaleAnimation(0, 1, 1, 1);
         anim.setDuration(duration);
         v.startAnimation(anim);
     }
 
     public static void collapseHorizontalAnimation(final View v, long duration) {
 
-        ScaleAnimation anim = new ScaleAnimation(0, 1, 1, 1);
+        ScaleAnimation anim = new ScaleAnimation(1, 0, 1, 1);
         anim.setDuration(duration);
         v.startAnimation(anim);
     }

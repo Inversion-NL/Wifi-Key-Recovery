@@ -16,6 +16,10 @@
     <color name="primary_dark">@color/material_teal_700</color>
     <!--   theme UI controls like checkboxes and text fields -->
     <color name="accent">@color/material_teal_200</color>
+    <!--   background color Holo card list -->
+    <color name="holo_bg_color_cards">@color/white_smoke</color>
+
+    <color name="white_smoke">#F5F5F5</color>
 
     <color name="material_teal_200">#80CBC4</color>
     <color name="material_teal_300">#4DB6AC</color>

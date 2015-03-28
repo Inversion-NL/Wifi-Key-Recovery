@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">WiFi Key Recovery</string>
-    <string name="app_changelog">
+    <string name="app_changeLog">
         \n
-        Changelog:\n\n
+        Change log:\n\n
 		v0.0.2 First public release.\n</string>
     <string name="label_menu_refresh">Refresh</string>
     <string name="label_menu_about">About</string>
@@ -40,7 +40,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="zxing_market_url">market://details?id=com.google.zxing.client.android</string>
     <string name="qr_code">QR Code</string>
-    <string name="protected_networks">Protected Networks:</string>
+    <string name="protected_networks">Protected networks:</string>
     <string name="label_copy_password">Copy password</string>
     <string name="label_copy_all">Copy All</string>
     <string name="label_show_qr_code">Show QR Code</string>

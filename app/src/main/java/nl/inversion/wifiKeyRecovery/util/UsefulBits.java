@@ -131,7 +131,7 @@ public class UsefulBits {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(mContext.getString(R.string.app_changelog));
+		sb.append(mContext.getString(R.string.app_changeLog));
 
 		MyAlertBox.create(mContext,
                 sb.toString(),
