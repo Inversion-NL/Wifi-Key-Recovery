@@ -20,7 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditActivity" >
+        <activity android:name="nl.inversion.wifiKeyRecovery.EditActivity" >
+            android:parentActivityName="nl.inversion.wifiKeyRecovery.MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.inversion.wifiKeyRecovery.MainActivity" />
         </activity>
     </application>
 

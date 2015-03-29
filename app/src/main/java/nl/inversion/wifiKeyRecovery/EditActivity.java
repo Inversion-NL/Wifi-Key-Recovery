@@ -2,8 +2,10 @@ package nl.inversion.wifiKeyRecovery;
 
 import java.io.File;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -12,11 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.support.v4.app.NavUtils;
 
 import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
 public class EditActivity extends Activity {
 	final String TAG =  this.getClass().getName();
+    int sdkInt;
 
     private static final String INTENT_EXPORT_NAME_INFO = "info";
     private static final String INTENT_EXPORT_NAME_TIME = "time";
@@ -25,10 +29,16 @@ public class EditActivity extends Activity {
     private String mTimeDate;
 	private UsefulBits mUsefulBits;
 
-	public void onCreate(Bundle savedInstanceState) {
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_edit);
+
+        sdkInt = android.os.Build.VERSION.SDK_INT;
+        if (sdkInt > Build.VERSION_CODES.HONEYCOMB) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 		final Bundle extras = getIntent().getExtras();
 		mUsefulBits = new UsefulBits(getApplicationContext());
@@ -54,6 +64,9 @@ public class EditActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
             case R.id.action_share:
                 shareResults();
                 return true;
