@@ -57,7 +57,7 @@ import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 
-    private static final Boolean debug          = true;
+    private static final Boolean debug          = false;
     private static final String CLIPBOARD_LABEL = "WifiCode";
 
     private Drawable mIconOpenSearch;
@@ -360,6 +360,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
 
     private void populateList(List<NetInfo> netInfoList){
+
+        if (debug) showDebugWarningDialog();
 
         if(netInfoList.size() > 0 ){
 
