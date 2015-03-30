@@ -5,14 +5,14 @@
     <string name="app_changeLog">
         \n
         Change log:\n\n
-		v0.0.2 First public release.\n</string>
+		v0.0.2 First beta release.\n</string>
     <string name="label_menu_refresh">Refresh</string>
     <string name="label_menu_about">About</string>
     <string name="label_menu_export">Export</string>
     <string name="label_menu_edit">Edit</string>
     <string name="label_menu_search">Search</string>
-    <string name="label_device">Device:</string>
-    <string name="label_time">Time:</string>
+    <string name="label_device">Device</string>
+    <string name="label_time">Time</string>
     <string name="label_wifi_passwords">___WiFi_Passwords________</string>
     <string formatted="false" name="root_needed">This application needs root.\n\n
     Can not continue without root!</string>
@@ -38,7 +38,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="zxing_market_url">market://details?id=com.google.zxing.client.android</string>
     <string name="qr_code">QR Code</string>
-    <string name="protected_networks">Protected networks:</string>
+    <string name="protected_networks">Protected networks</string>
     <string name="label_copy_password">Copy password</string>
     <string name="label_copy_all">Copy All</string>
     <string name="label_show_qr_code">Show QR Code</string>
