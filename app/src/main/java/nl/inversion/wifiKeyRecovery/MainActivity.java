@@ -1,6 +1,7 @@
 package nl.inversion.wifiKeyRecovery;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -57,7 +58,7 @@ import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 
-    private static final Boolean debug          = false;
+    private static final Boolean debug          = true;
     private static final String CLIPBOARD_LABEL = "WifiCode";
 
     private Drawable mIconOpenSearch;
@@ -401,44 +402,107 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		mLabelTimeDate.setText("");
 	}
 
+    private Handler mHandler = new Handler();
 	private void getPasswords(){
-		LockScreenRotation();
-		ExecTerminal mExecTerminal = new ExecTerminal();
 
-		if(mExecTerminal.checkSu()){
+        if (debug) {
+
+            LockScreenRotation();
 
             progress = new ProgressDialog(this);
             progress.setMessage(getString(R.string.dialogue_text_please_wait));
             progress.setIndeterminate(true);
+            progress.setCancelable(false);
             progress.show();
-            mExecuteThread = new ExecuteThread(handler, this, mThreadBundle);
-            mExecuteThread.start();
 
-		} else {
+            // Execute some code after 5 seconds have passed
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    List<NetInfo> l = new ArrayList<>();
 
-            int textColor;
-            if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
-                textColor = R.color.default_text_color_dark;
+                    NetInfo netInfo = new NetInfo("SSID:         \"wireless\"\npsk:          \"wpa-key\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless", "wpa-key", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless2\"\npsk:          \"wpa-key2\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless2", "wpa-key2", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless3\"\npsk:          \"wpa-key3\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless3", "wpa-key3", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless4\"\npsk:          \"wpa-key4\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless4", "wpa-key4", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless5\"\npsk:          \"wpa-key5\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless5", "wpa-key5", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless6\"\npsk:          \"wpa-key6\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless6", "wpa-key6", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless7\"\npsk:          \"wpa-key7\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless7", "wpa-key7", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    netInfo = new NetInfo("SSID:         \"wireless8\"\npsk:          \"wpa-key8\"\nKey MGMT:     WPA-PSK");
+                    netInfo.setQrCodeInfo("wireless8", "wpa-key8", NetInfo.TYPE_WPA);
+                    l.add(netInfo);
+
+                    if (l != null) {
+                        Collections.sort(l, new NetInfoComperator());
+                        populateList(l);
+                        mList.setTag(l);
+                    }
+                    progress.dismiss();
+                }
+            }, 5000);
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
+        } else {
+            LockScreenRotation();
+            ExecTerminal mExecTerminal = new ExecTerminal();
+
+            if (mExecTerminal.checkSu()) {
+
+                progress = new ProgressDialog(this);
+                progress.setMessage(getString(R.string.dialogue_text_please_wait));
+                progress.setIndeterminate(true);
+                progress.show();
+                mExecuteThread = new ExecuteThread(handler, this, mThreadBundle);
+                mExecuteThread.start();
+
             } else {
-                textColor = R.color.default_text_color_light;
+
+                int textColor;
+                if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
+                    textColor = R.color.default_text_color_dark;
+                } else {
+                    textColor = R.color.default_text_color_light;
+                }
+
+                AlertDialog dlg = MyAlertBox.create(this,
+                        getString(R.string.root_needed),
+                        getString(R.string.app_name),
+                        getString(android.R.string.ok),
+                        textColor);
+
+                dlg.setOnDismissListener(new OnDismissListener() {
+
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (!debug) MainActivity.this.finish();
+                        else showDebugWarningDialog();
+                    }
+                });
+                dlg.show();
             }
-
-            AlertDialog dlg = MyAlertBox.create(this,
-                    getString(R.string.root_needed),
-                    getString(R.string.app_name),
-                    getString(android.R.string.ok),
-                    textColor);
-
-			dlg.setOnDismissListener(new OnDismissListener() {
-
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					if (!debug) MainActivity.this.finish();
-                    else showDebugWarningDialog();
-				}
-			});
-			dlg.show();
-		}
+        }
 	}
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -611,11 +675,11 @@ public class MainActivity extends Activity implements OnItemClickListener {
                         text = ni.getQrCodeString();
 
                         if (text.length() > 0) {
-                            if (mUsefulBits.isIntentAvailable(MainActivity.this, "com.google.zxing.client.android.ENCODE")){
+                            if (mUsefulBits.isIntentAvailable(MainActivity.this, "com.google.zxing.client.android.ENCODE")) {
                                 Intent i = new Intent();
                                 i.setAction("com.google.zxing.client.android.ENCODE");
-                                i.putExtra ("ENCODE_TYPE", "TEXT_TYPE");
-                                i.putExtra ("ENCODE_DATA", text);
+                                i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
+                                i.putExtra("ENCODE_DATA", text);
                                 startActivity(i);
                             } else {
                                 mUsefulBits.showApplicationMissingAlert(
@@ -664,7 +728,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
                     Log.d(TAG, "Worker Thread: WORK_COMPLETED");
                     List<NetInfo> l = new ArrayList<NetInfo>();
 
-                    l = (ArrayList<NetInfo>) msg.getData().getSerializable("passwords");
+                    Serializable passwords = msg.getData().getSerializable("passwords");
+                    l = (ArrayList<NetInfo>) passwords;
 
                     if (l != null){
                         Collections.sort(l, new NetInfoComperator());
