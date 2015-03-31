@@ -29,7 +29,7 @@ public class NetInfo implements Parcelable{
 		return mNetType;
 	}
 
-	public String getQrcodeString(){
+	public String getQrCodeString(){
 		if(!(mQrSsid.length()>0)){
 			return "";
 		}

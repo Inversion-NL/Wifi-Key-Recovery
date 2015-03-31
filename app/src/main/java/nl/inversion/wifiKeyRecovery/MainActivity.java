@@ -627,7 +627,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
                         copyStringToClipboard(ni.getPassword());
                         break;
                     case ID_SHOW_QR_CODE:
-                        text = ni.getQrcodeString();
+                        text = ni.getQrCodeString();
 
                         if (text.length() > 0) {
                             if (mUsefulBits.isIntentAvailable(MainActivity.this, "com.google.zxing.client.android.ENCODE")){
