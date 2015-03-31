@@ -89,7 +89,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private ExecuteThread mExecuteThread;
 	private ListView mList;
 	private NetInfoAdapter mNiAdapter;
-	private ProgressDialog mExecuteDialog;
+	// private ProgressDialog mExecuteDialog;
+    private ProgressDialog progress;
 	private String mTimeDate="";
 	private TextView mLabelDevice;
 	private TextView mLabelTimeDate;
@@ -407,7 +408,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		if(mExecTerminal.checkSu()){
 
-			showDialog(DIALOG_GET_PASSWORDS);
+            // showDialog is deprecated
+			// showDialog(DIALOG_GET_PASSWORDS);
+            progress = new ProgressDialog(this);
+            progress.setMessage(getString(R.string.dialogue_text_please_wait));
+            progress.setIndeterminate(true);
+            progress.show();
+            mExecuteThread = new ExecuteThread(handler, this, mThreadBundle);
+            mExecuteThread.start();
 
 		} else {
 
@@ -495,6 +503,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         alert.show();
     }
 
+    /*
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIALOG_GET_PASSWORDS:
@@ -508,6 +517,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			return null;
 		}
 	}
+	*/
 
     /**
      * This shows the soft keyboard
@@ -682,12 +692,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
                     }
 
                     mExecuteThread.setState(ExecuteThread.STATE_DONE);
-                    removeDialog(DIALOG_GET_PASSWORDS);
+                    progress.dismiss();
+                    // removeDialog(DIALOG_GET_PASSWORDS);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
                 case ExecuteThread.WORK_INTERUPTED:
                     mExecuteThread.setState(ExecuteThread.STATE_DONE);
-                    removeDialog(DIALOG_GET_PASSWORDS);
+                    progress.dismiss();
+                    // removeDialog(DIALOG_GET_PASSWORDS);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     break;
             }
