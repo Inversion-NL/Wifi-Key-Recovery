@@ -89,7 +89,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private ExecuteThread mExecuteThread;
 	private ListView mList;
 	private NetInfoAdapter mNiAdapter;
-	// private ProgressDialog mExecuteDialog;
     private ProgressDialog progress;
 	private String mTimeDate="";
 	private TextView mLabelDevice;
@@ -408,8 +407,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		if(mExecTerminal.checkSu()){
 
-            // showDialog is deprecated
-			// showDialog(DIALOG_GET_PASSWORDS);
             progress = new ProgressDialog(this);
             progress.setMessage(getString(R.string.dialogue_text_please_wait));
             progress.setIndeterminate(true);
@@ -502,22 +499,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
         AlertDialog alert = actionDialog.create();
         alert.show();
     }
-
-    /*
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DIALOG_GET_PASSWORDS:
-			mExecuteDialog = new ProgressDialog(this);
-			mExecuteDialog.setMessage(getString(R.string.dialogue_text_please_wait));
-
-			mExecuteThread = new ExecuteThread(handler, this, mThreadBundle);
-			mExecuteThread.start();
-			return mExecuteDialog;
-		default:
-			return null;
-		}
-	}
-	*/
 
     /**
      * This shows the soft keyboard
@@ -693,13 +674,11 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
                     mExecuteThread.setState(ExecuteThread.STATE_DONE);
                     progress.dismiss();
-                    // removeDialog(DIALOG_GET_PASSWORDS);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
                 case ExecuteThread.WORK_INTERUPTED:
                     mExecuteThread.setState(ExecuteThread.STATE_DONE);
                     progress.dismiss();
-                    // removeDialog(DIALOG_GET_PASSWORDS);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     break;
             }
