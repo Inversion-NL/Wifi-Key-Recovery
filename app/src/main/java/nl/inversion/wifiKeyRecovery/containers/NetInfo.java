@@ -3,6 +3,7 @@ package nl.inversion.wifiKeyRecovery.containers;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@SuppressWarnings("UnusedDeclaration")
 public class NetInfo implements Parcelable{
 	public final static int TYPE_UNKNOWN = -1;
 	public final static int TYPE_NO_ENC = 0;
@@ -35,12 +36,16 @@ public class NetInfo implements Parcelable{
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("WIFI:");
-		sb.append("S:" + mQrSsid + ";");
-		sb.append("T:" + mQrNetType + ";");
+        sb.append("WIFI:")
+            .append("S:")
+            .append(mQrSsid)
+            .append(";")
+            .append("T:")
+            .append(mQrNetType)
+            .append(";");
 
-		if(mQrPassword.length() > 0){
-			sb.append("P:" + mQrPassword + ";");
+        if(mQrPassword.length() > 0){
+			sb.append("P:").append(mQrPassword).append(";");
 		}
 
 		sb.append(";");

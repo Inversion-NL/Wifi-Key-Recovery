@@ -95,6 +95,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private TextView mLabelDevice;
 	private TextView mLabelTimeDate;
 	private TextView mTextViewResultCount;
+    private TextView mTextViewDubbelTapToDeveloper;
 	private UsefulBits mUsefulBits;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -318,7 +319,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
             // Change search icon accordingly.
             mSearchActionMenuItem.setIcon(mIconOpenSearch);
             mSearchOpened = false;
-            onClearSearchClick();
+            onClearSearchClick(null);
         }
     }
 
@@ -526,7 +527,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             } else {
                 android.content.ClipboardManager clipMan =
-                        (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        (android.content.ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, text);
                 clipMan.setPrimaryClip(clip);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -548,7 +550,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		}
 	}
 
-	public void onClearSearchClick(){
+	public void onClearSearchClick(View v){
         if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
             mEditFilter.setText("");
         }
@@ -582,35 +584,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         InputMethodManager inputManager =
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(mSearchEt.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        inputManager.hideSoftInputFromWindow(mSearchEt.getWindowToken(),
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-    }
-
-    public static void expandVertical(final View v) {
-        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-
-        v.getLayoutParams().height = 0;
-        v.setVisibility(View.VISIBLE);
-        Animation anim = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? LinearLayout.LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
-                v.requestLayout();
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        anim.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(anim);
     }
 
     public static void expandHorizontalAnimation(final View v, long duration) {
@@ -624,31 +600,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         ScaleAnimation anim = new ScaleAnimation(1, 0, 1, 1);
         anim.setDuration(duration);
-        v.startAnimation(anim);
-    }
-
-    public static void expandHorizontal(final View v) {
-        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        final int measuredWidth = v.getMeasuredWidth();
-
-        // v.getLayoutParams().width = 0;
-        // v.setVisibility(View.VISIBLE);
-        Animation anim = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().width = interpolatedTime == 1
-                        ? LinearLayout.LayoutParams.WRAP_CONTENT
-                        : (int)(measuredWidth * interpolatedTime);
-                v.requestLayout();
-            }
-
-        };
-
-        // 1dp/ms
-        long animation = (int) (measuredWidth / v.getContext().getResources().getDisplayMetrics().density);
-        animation = 400l;
-        anim.setDuration(animation);
         v.startAnimation(anim);
     }
 
@@ -675,7 +626,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
                         text = ni.getQrCodeString();
 
                         if (text.length() > 0) {
-                            if (mUsefulBits.isIntentAvailable(MainActivity.this, "com.google.zxing.client.android.ENCODE")) {
+                            if (mUsefulBits.isIntentAvailable(MainActivity.this,
+                                    "com.google.zxing.client.android.ENCODE")) {
                                 Intent i = new Intent();
                                 i.setAction("com.google.zxing.client.android.ENCODE");
                                 i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
