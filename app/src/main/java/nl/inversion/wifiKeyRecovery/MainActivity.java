@@ -12,7 +12,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
@@ -58,8 +57,16 @@ import nl.inversion.wifiKeyRecovery.util.UsefulBits;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 
-    private static final Boolean debug          = true;
+    private Boolean debug = true;
     private static final String CLIPBOARD_LABEL = "WifiCode";
+    public static final String WIRELESS_EXAMPLE1 = "SSID:         \"wireless\"\npsk:          \"wpa-key\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE2 = "SSID:         \"wireless2\"\npsk:          \"wpa-key2\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE3 = "SSID:         \"wireless3\"\npsk:          \"wpa-key3\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE4 = "SSID:         \"wireless4\"\npsk:          \"wpa-key4\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE5 = "SSID:         \"wireless5\"\npsk:          \"wpa-key5\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE6 = "SSID:         \"wireless6\"\npsk:          \"wpa-key6\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE7 = "SSID:         \"wireless7\"\npsk:          \"wpa-key7\"\nKey MGMT:     WPA-PSK";
+    public static final String WIRELESS_EXAMPLE8 = "SSID:         \"wireless8\"\npsk:          \"wpa-key8\"\nKey MGMT:     WPA-PSK";
 
     private Drawable mIconOpenSearch;
     private Drawable mIconCloseSearch;
@@ -72,8 +79,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private static final int ID_COPY_PASSWORD	= 0;
 	private static final int ID_COPY_ALL   		= 1;
 	private static final int ID_SHOW_QR_CODE    = 2;
-
-	private static final int DIALOG_GET_PASSWORDS = 1;
 
     private static final String INTENT_EXPORT_NAME_INFO = "info";
     private static final String INTENT_EXPORT_NAME_TIME = "time";
@@ -95,9 +100,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private TextView mLabelDevice;
 	private TextView mLabelTimeDate;
 	private TextView mTextViewResultCount;
-    private TextView mTextViewDubbelTapToDeveloper;
 	private UsefulBits mUsefulBits;
 
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,9 +129,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
             // getDrawable is only available on Lollipop and newer
             mIconOpenSearch = getDrawable(R.drawable.ic_action_search);
             mIconCloseSearch = getDrawable(R.drawable.ic_delete);
-
-        } else if (sdkInt > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-
 
         } else if (sdkInt > Build.VERSION_CODES.HONEYCOMB) {
 
@@ -223,8 +225,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
             case R.id.menu_export:
                 StringBuilder export_text = new StringBuilder();
 
-                export_text.append(getString(R.string.label_wifi_passwords) + "\n")
-                        .append(mUsefulBits.listToString((List<?>) mList.getTag()) + "\n\n")
+                export_text.append(getString(R.string.label_wifi_passwords)).append("\n")
+                        .append(mUsefulBits.listToString((List<?>) mList.getTag())).append("\n\n")
                         .append(mTextViewResultCount.getText());
 
                 final File folder = android.os.Environment.getExternalStorageDirectory();
@@ -238,8 +240,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 Intent myIntent = new Intent();
                 export_text = new StringBuilder();
 
-                export_text.append(getString(R.string.label_wifi_passwords) + "\n")
-                        .append(mUsefulBits.listToString((List<?>) mList.getTag()) + "\n\n")
+                export_text.append(getString(R.string.label_wifi_passwords)).append("\n")
+                        .append(mUsefulBits.listToString((List<?>) mList.getTag())).append("\n\n")
                         .append(mTextViewResultCount.getText());
 
                 myIntent.putExtra(INTENT_EXPORT_NAME_INFO, export_text.toString());
@@ -271,12 +273,13 @@ public class MainActivity extends Activity implements OnItemClickListener {
         if (sdkInt >= Build.VERSION_CODES.HONEYCOMB) {
             // Set custom view on action bar.
             ActionBar actionBar = getActionBar();
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(R.layout.search_bar);
-
-            // Search edit text field setup.
-            mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
-            expandHorizontalAnimation(mSearchEt, animationDuration);
+            if (actionBar != null) {
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(R.layout.search_bar);
+                // Search edit text field setup.
+                mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
+                expandHorizontalAnimation(mSearchEt, animationDuration);
+            }
 
             mSearchEt.addTextChangedListener(filterTextWatcher);
             mSearchEt.setText(queryText);
@@ -297,10 +300,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
             mSearchOpened = true;
 
             showSoftKeyboard();
-
-        } else {
-            // Should not be called since the search button is hidden for devices
-            // older then Honeycomb
         }
     }
 
@@ -311,15 +310,16 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
             ActionBar actionBar = getActionBar();
             // Remove custom view.
-            actionBar.setDisplayShowCustomEnabled(false);
-
-            mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
-            collapseHorizontalAnimation(mSearchEt, animationDuration);
+            if (actionBar != null) {
+                actionBar.setDisplayShowCustomEnabled(false);
+                mSearchEt = (EditText) actionBar.getCustomView().findViewById(R.id.etSearch);
+                collapseHorizontalAnimation(mSearchEt, animationDuration);
+            }
 
             // Change search icon accordingly.
             mSearchActionMenuItem.setIcon(mIconOpenSearch);
             mSearchOpened = false;
-            onClearSearchClick(null);
+            onClearSearchClick();
         }
     }
 
@@ -403,8 +403,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		mLabelTimeDate.setText("");
 	}
 
-    private Handler mHandler = new Handler();
-	private void getPasswords(){
+    private void getPasswords(){
 
         if (debug) {
 
@@ -416,49 +415,48 @@ public class MainActivity extends Activity implements OnItemClickListener {
             progress.setCancelable(false);
             progress.show();
 
-            // Execute some code after 5 seconds have passed
+            // Fill data after 5 seconds have passed to test wait screen in debug session
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     List<NetInfo> l = new ArrayList<>();
 
-                    NetInfo netInfo = new NetInfo("SSID:         \"wireless\"\npsk:          \"wpa-key\"\nKey MGMT:     WPA-PSK");
+                    NetInfo netInfo = new NetInfo(WIRELESS_EXAMPLE1);
                     netInfo.setQrCodeInfo("wireless", "wpa-key", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless2\"\npsk:          \"wpa-key2\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE2);
                     netInfo.setQrCodeInfo("wireless2", "wpa-key2", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless3\"\npsk:          \"wpa-key3\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE3);
                     netInfo.setQrCodeInfo("wireless3", "wpa-key3", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless4\"\npsk:          \"wpa-key4\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE4);
                     netInfo.setQrCodeInfo("wireless4", "wpa-key4", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless5\"\npsk:          \"wpa-key5\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE5);
                     netInfo.setQrCodeInfo("wireless5", "wpa-key5", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless6\"\npsk:          \"wpa-key6\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE6);
                     netInfo.setQrCodeInfo("wireless6", "wpa-key6", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless7\"\npsk:          \"wpa-key7\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE7);
                     netInfo.setQrCodeInfo("wireless7", "wpa-key7", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    netInfo = new NetInfo("SSID:         \"wireless8\"\npsk:          \"wpa-key8\"\nKey MGMT:     WPA-PSK");
+                    netInfo = new NetInfo(WIRELESS_EXAMPLE8);
                     netInfo.setQrCodeInfo("wireless8", "wpa-key8", NetInfo.TYPE_WPA);
                     l.add(netInfo);
 
-                    if (l != null) {
-                        Collections.sort(l, new NetInfoComperator());
-                        populateList(l);
-                        mList.setTag(l);
-                    }
+                    Collections.sort(l, new NetInfoComperator());
+                    populateList(l);
+                    mList.setTag(l);
+
                     progress.dismiss();
                 }
             }, 5000);
@@ -506,6 +504,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         }
 	}
 
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void copyStringToClipboard(String text){
 
@@ -527,8 +526,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             } else {
                 android.content.ClipboardManager clipMan =
-                        (android.content.ClipboardManager)
-                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, text);
                 clipMan.setPrimaryClip(clip);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -550,7 +548,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		}
 	}
 
-	public void onClearSearchClick(View v){
+	public void onClearSearchClick(){
         if (sdkInt < Build.VERSION_CODES.HONEYCOMB && mEditFilter != null) {
             mEditFilter.setText("");
         }
@@ -584,9 +582,36 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         InputMethodManager inputManager =
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(mSearchEt.getWindowToken(),
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        inputManager.hideSoftInputFromWindow(mSearchEt.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
 
+    }
+
+    @SuppressWarnings("unused")
+    public static void expandVertical(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        anim.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(anim);
     }
 
     public static void expandHorizontalAnimation(final View v, long duration) {
@@ -600,6 +625,32 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         ScaleAnimation anim = new ScaleAnimation(1, 0, 1, 1);
         anim.setDuration(duration);
+        v.startAnimation(anim);
+    }
+
+    @SuppressWarnings("unused")
+    public static void expandHorizontal(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int measuredWidth = v.getMeasuredWidth();
+
+        // v.getLayoutParams().width = 0;
+        // v.setVisibility(View.VISIBLE);
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().width = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(measuredWidth * interpolatedTime);
+                v.requestLayout();
+            }
+
+        };
+
+        // 1dp/ms
+        long animation = (int) (measuredWidth / v.getContext().getResources().getDisplayMetrics().density);
+        animation = 400l;
+        anim.setDuration(animation);
         v.startAnimation(anim);
     }
 
@@ -626,8 +677,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
                         text = ni.getQrCodeString();
 
                         if (text.length() > 0) {
-                            if (mUsefulBits.isIntentAvailable(MainActivity.this,
-                                    "com.google.zxing.client.android.ENCODE")) {
+                            if (mUsefulBits.isIntentAvailable(MainActivity.this, "com.google.zxing.client.android.ENCODE")) {
                                 Intent i = new Intent();
                                 i.setAction("com.google.zxing.client.android.ENCODE");
                                 i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
