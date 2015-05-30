@@ -44,7 +44,7 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable {
 		mAllItems = this.mSubItems;
 
 		mContext = context;
-		mAlphaIndexer = new HashMap<String, Integer>();
+		mAlphaIndexer = new HashMap<>();
 
 		prepareIndexer();
 	}
@@ -69,7 +69,7 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable {
 
 		final Set<String> keys = mAlphaIndexer.keySet();
 		final Iterator<String> it = keys.iterator();
-		final List<String> keyList = new ArrayList<String>();
+		final List<String> keyList = new ArrayList<>();
 
 		while (it.hasNext()) {
 			keyList.add(it.next());
@@ -168,7 +168,7 @@ public class NetInfoAdapter extends BaseAdapter implements Filterable {
 			// not the UI thread.
 
 			final FilterResults results = new FilterResults();
-			final List<NetInfo> i = new ArrayList<NetInfo>();
+			final List<NetInfo> i = new ArrayList<>();
 
 			if (filterString != null && filterString.toString().length() > 0) {
 

@@ -337,7 +337,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         if (data == null) { // We need to do everything from scratch!
 
             Calendar calendar = Calendar.getInstance();
-            mTimeDate = mUsefulBits.getLocaleFormattedDate(calendar);
+            mTimeDate = UsefulBits.getLocaleFormattedDate(calendar);
             mLabelTimeDate.setText(mTimeDate);
             getPasswords();
 
